@@ -1,1 +1,8 @@
 *.js
+*.config
+*.sln
+*.suo
+*.user
+*.csproj
+*.cs
+*.cache
