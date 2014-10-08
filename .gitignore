@@ -1,5 +1,5 @@
-*.js
-!Dependencies/*.js
+bin/
+obj/
 *.config
 *.sln
 *.suo
@@ -7,3 +7,4 @@
 *.csproj
 *.cs
 *.cache
+*.js
