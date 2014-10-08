@@ -1,10 +1,10 @@
-﻿import controllers = require("RTJS/UI/Controllers/Abstract/Controller");
-import views = require("RTJS/UI/Views/View");
-import models = require("RTJS/Model/Abstract/IModel");
+﻿import views = require("../Views/View");
+import Controller = require("./Abstract/Controller");
+import IModel = require("../../Model/Abstract/IModel");
   
-export class DefaultController extends controllers.Controller<views.View, models.IModel> {
+export class DefaultController extends Controller<views.View, IModel> {
     
-  constructor(rootElement: JQuery, model: models.IModel) {
+  constructor(rootElement: JQuery, model: IModel) {
 
     super(new views.View(rootElement), model);
 

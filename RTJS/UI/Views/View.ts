@@ -1,21 +1,21 @@
 ﻿
-import util = require("RTJS/Util/Observable");
-import collection = require("RTJS/Util/Collection");
-import widget = require("RTJS/UI/Widgets/Abstract/Widget");
-import widgetB = require("RTJS/UI/Widgets/ButtonWidget");
-import widgetI = require("RTJS/UI/Widgets/InputWidget");
+import util = require("../../Util/Observable");
+import Collection = require("../../Util/Collection");
+import widget = require("../Widgets/Abstract/Widget");
+import widgetB = require("../Widgets/ButtonWidget");
+import widgetI = require("../Widgets/InputWidget");
 
 export class View extends util.Observable implements util.IObserver {
 
   private loaded: boolean;
   private pendingBinding: any[];
   private keyedWidgets: Object;
-  public widgets: collection.Collection<widget.Widget>;
+  public widgets: Collection<widget.Widget>;
   public validationErrors: string[];
 
   constructor(public rootElement: JQuery) {
     super();
-    this.widgets = new collection.Collection<widget.Widget>();
+    this.widgets = new Collection<widget.Widget>();
     this.validationErrors = [];
     this.keyedWidgets = {};
     this.loaded = false;

@@ -1,8 +1,8 @@
 ﻿/// <reference path="Abstract/Widget.ts"/>
 
 import widget = require("./Abstract/Widget");
-import view = require("RTJS/UI/Views/View");
-import util = require("RTJS/Util/Observable");
+import view = require("../../UI/Views/View");
+import util = require("../../Util/Observable");
 
 export class InputWidget extends widget.FormattableWidget implements util.IObserver {
   

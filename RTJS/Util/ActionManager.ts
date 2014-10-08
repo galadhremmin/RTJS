@@ -1,6 +1,6 @@
 ﻿import util = require("./Observable")
 
-export class ActionManager {
+class ActionManager {
 
   constructor(private context: Object) {
   }
@@ -25,4 +25,4 @@ export class ActionManager {
   }
 }
 
- 
+export = ActionManager;

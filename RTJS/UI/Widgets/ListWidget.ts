@@ -1,7 +1,7 @@
 ﻿/// <reference path="Abstract/Widget.ts"/> 
 
 import widget = require("./Abstract/Widget");
-import util = require("RTJS/Util/Observable");
+import util = require("../../Util/Observable");
   
 export class ListWidget extends widget.ViewOnlyWidget {
   

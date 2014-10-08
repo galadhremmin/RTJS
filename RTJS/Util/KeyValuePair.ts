@@ -1,5 +1,4 @@
-﻿
-export class KeyValuePair {
+﻿class KeyValuePair {
     
   constructor(private key: string, private value: any, private container?: any) {
       
@@ -18,4 +17,5 @@ export class KeyValuePair {
   }
 
 }
- 
+
+export = KeyValuePair;

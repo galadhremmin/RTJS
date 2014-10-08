@@ -1,6 +1,6 @@
 ﻿/// <reference path="Abstract/Widget.ts"/>
 
-import view   = require("RTJS/UI/Views/View");
+import view   = require("../../UI/Views/View");
 import widget = require("./Abstract/Widget");
   
 /**

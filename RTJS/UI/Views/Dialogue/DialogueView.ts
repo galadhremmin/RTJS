@@ -1,8 +1,8 @@
 ﻿/// <reference path="../View.ts"/>
 
-import view = require("RTJS/UI/Views/View");
-import widgetB = require("RTJS/UI/Widgets/ButtonWidget");
-import widgetI = require("RTJS/UI/Widgets/InputWidget");
+import view = require("../View");
+import widgetB = require("../../Widgets/ButtonWidget");
+import widgetI = require("../../Widgets/InputWidget");
 
 export class DialogueView extends view.View {
   public isOpen: boolean;

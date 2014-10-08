@@ -1,18 +1,18 @@
-﻿import views = require("RTJS/UI/Views/View");
-import util = require("RTJS/Util/Observable");
-import models = require("RTJS/Model/Abstract/IModel");
-import action = require("RTJS/Util/ActionManager");
+﻿import views = require("../../Views/View");
+import util = require("../../../Util/Observable");
+import IModel = require("../../../Model/Abstract/IModel");
+import ActionManager = require("../../../Util/ActionManager");
 
-export class Controller<TView extends views.View, TModel extends models.IModel> implements util.IObserver {
+class Controller<TView extends views.View, TModel extends IModel> implements util.IObserver {
     
-  private actionManager: action.ActionManager;
+  private actionManager: ActionManager;
 
   constructor(public view: TView, public model: TModel) {
     if (!(view instanceof views.View)) {
       throw 'Controller hasn\'t been properly overloaded. The constructor\'s first parameter should be of the type JQuery to be compatible with the RTJS initializer. This is the root element for the view.';
     }
 
-    this.actionManager = new action.ActionManager(this);
+    this.actionManager = new ActionManager(this);
 
     view.observe(this);
     model.observe(this);
@@ -61,3 +61,5 @@ export class Controller<TView extends views.View, TModel extends models.IModel> 
     this.model = undefined;
   }
 }
+
+export = Controller;

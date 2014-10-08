@@ -1,8 +1,8 @@
 ﻿/// <reference path="Abstract/Widget.ts"/>
 
 import widget = require("./Abstract/Widget");
-import valueUtil = require("RTJS/Util/KeyValuePair");
-import util = require("RTJS/Util/Observable");
+import KeyValuePair = require("../../Util/KeyValuePair");
+import util = require("../../Util/Observable");
   
 export class CheckedInputGroupWidget extends widget.Widget {
   private type;
@@ -46,8 +46,8 @@ export class CheckedInputGroupWidget extends widget.Widget {
         throw 'ui_checkedInputGroupWidget: binding to null!';
       }
 
-      if (!(value instanceof valueUtil.KeyValuePair)) {
-        value = new valueUtil.KeyValuePair(undefined, String(value));
+      if (!(value instanceof KeyValuePair)) {
+        value = new KeyValuePair(undefined, String(value));
       }
 
       selectedValues.push(value);

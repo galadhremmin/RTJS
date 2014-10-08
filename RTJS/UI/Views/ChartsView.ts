@@ -1,5 +1,5 @@
 ﻿import view = require("./View");
-import widgets = require("RTJS/UI/Widgets/Abstract/Widget");
+import widgets = require("../Widgets/Abstract/Widget");
 
 export class ChartsView extends view.ButtonView {
   public load(callback?: () => void): void {

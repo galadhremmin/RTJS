@@ -1,4 +1,4 @@
-﻿export class SessionStorage {
+﻿class SessionStorage {
     
   private static inst = null;
   private storage;
@@ -114,4 +114,6 @@
       throw new Error('No default key provided, must specify a key');
     }
   }
-} 
+}
+
+export = SessionStorage;

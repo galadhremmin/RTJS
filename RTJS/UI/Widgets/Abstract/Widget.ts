@@ -1,5 +1,5 @@
 ﻿import util = require("../../../Util/Observable");
-import dataTool = require("../../../Util/SessionStorage");
+import SessionStorage = require("../../../Util/SessionStorage");
 import format = require("../../../Util/Formatter")
 
 /**
@@ -89,7 +89,7 @@ export class Widget extends util.Observable {
     }
 
 
-    dataTool.SessionStorage.instance().set(key, value);
+    SessionStorage.instance().set(key, value);
   }
 
   public _loadState(): void {
@@ -98,7 +98,7 @@ export class Widget extends util.Observable {
       return;
     }
 
-    var data = dataTool.SessionStorage.instance().get(key);
+    var data = SessionStorage.instance().get(key);
     if (data) {
       this.set(this._deserializeState(data));
     }

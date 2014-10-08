@@ -101,7 +101,7 @@ module rtjs {
 
     public static hookInitializer() {
       require.config({
-        baseUrl: '/',
+        baseUrl: this.rootPath,
         waitSeconds: 60 // The number of seconds to wait before giving up on loading a script
       });
 
@@ -269,7 +269,7 @@ module rtjs {
      * the list of module paths is updated as well.
      */
     public addReference(reference: DependencyReference) {
-      var dependency = Initializer.rootPath + reference.name;
+      var dependency = reference.name;
       var i: number;
 
       for (i = 0; i < this.dependencies.length; i += 1) {
@@ -293,6 +293,8 @@ module rtjs {
     public assignBlueprints(loadedDependencies: Array<any>) {
       var reference: DependencyReference;
       var i: number;
+      var loadedModule: any;
+
       for (i = 0; i < this.references.length; i += 1) {
         reference = this.references[i];
 
@@ -301,7 +303,8 @@ module rtjs {
           continue;
         }
 
-        reference.blueprint = loadedDependencies[reference.index][reference.getClassName()];
+        loadedModule = loadedDependencies[reference.index];
+        reference.blueprint = loadedModule.hasOwnProperty(reference.getClassName()) ? loadedModule[reference.getClassName()] : loadedModule;
       }
     }
 

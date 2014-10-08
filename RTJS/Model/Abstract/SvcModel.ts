@@ -1,12 +1,12 @@
-﻿import models = require("./IModel");
-import observer = require("RTJS/Util/Observable");
-import dataTools = require("RTJS/Util/SessionStorage");
+﻿import IModel = require("./IModel");
+import observer = require("../../Util/Observable");
+import SessionStorage = require("../../Util/SessionStorage");
 
-export interface IGuideModel extends models.IModel {
+export interface IGuideModel extends IModel {
   createSession(resume: boolean, callback: () => void);
 }
 
-export class SvcModel extends observer.Observable implements models.IModel {
+export class SvcModel extends observer.Observable implements IModel {
   private requests: Array<SvcRequest>;
   private working: boolean;
 
@@ -99,19 +99,19 @@ export class SvcModel extends observer.Observable implements models.IModel {
   }
 
   public updateValidity(key: string, validity: boolean, data?: any) {
-    var storage = dataTools.SessionStorage.instance();
+    var storage = SessionStorage.instance();
     data = data || storage.get(key) || {};
     data.Valid = !!validity;
     storage.set(key, data);
   }
 
   public checkHasChanged(key: string, newData: any) {
-    var storage = dataTools.SessionStorage.instance();
+    var storage = SessionStorage.instance();
     return ! storage.matches(key, newData);
   }
 
   public checkValidity(key: string, data?: any) {
-    var storage = dataTools.SessionStorage.instance();
+    var storage = SessionStorage.instance();
     data = data || storage.get(key) || {};
     return !!(data.Valid);
   }

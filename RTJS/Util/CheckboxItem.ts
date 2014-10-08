@@ -1,8 +1,8 @@
 ﻿/// <reference path="KeyValuePair.ts"/>
 
-import util = require("./KeyValuePair");
+import KeyValuePair = require("./KeyValuePair");
  
-export class CheckboxItem extends util.KeyValuePair {
+class CheckboxItem extends KeyValuePair {
     
   constructor(key: string, value: any, typeName: string, private checked: boolean) {
     super(key, value, typeName);
@@ -17,3 +17,5 @@ export class CheckboxItem extends util.KeyValuePair {
   }
 
 }
+
+export = CheckboxItem;

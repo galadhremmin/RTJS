@@ -1,5 +1,7 @@
-﻿import util = require("RTJS/Util/Observable");
+﻿import util = require("../../Util/Observable");
 
-export interface IModel extends util.Observable {
+interface IModel extends util.Observable {
 
 }
+
+export = IModel;

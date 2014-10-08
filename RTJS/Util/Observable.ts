@@ -1,5 +1,4 @@
-﻿
-export class Observable implements IObservable {
+﻿export class Observable implements IObservable {
   private observers: Array<IObserver>;
 
   constructor() {

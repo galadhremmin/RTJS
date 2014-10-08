@@ -1,5 +1,4 @@
-﻿
-export class Collection<TCollectionItem> {
+﻿class Collection<TCollectionItem> {
   private items: Array<TCollectionItem>;
 
   constructor(values?: Array<TCollectionItem>) {
@@ -87,4 +86,5 @@ export class Collection<TCollectionItem> {
     return items;
   }
 }
- 
+
+export = Collection;

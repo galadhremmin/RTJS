@@ -1,9 +1,9 @@
 ﻿/// <reference path="Abstract/Widget.ts"/>
 
 import widget = require("./Abstract/Widget");
-import util = require("RTJS/Util/Observable");
-import assoc = require("RTJS/Util/KeyValuePair");
-import checkbox = require("RTJS/Util/CheckboxItem");
+import util = require("../../Util/Observable");
+import KeyValuePair = require("../../Util/KeyValuePair");
+import CheckboxItem = require("../../Util/CheckboxItem");
   
 export class SelectWidget extends widget.Widget {
 
@@ -33,7 +33,7 @@ export class SelectWidget extends widget.Widget {
     for (i = 0; i < values.length; i += 1) {
       text = values[i];
 
-      if (text instanceof assoc.KeyValuePair) {
+      if (text instanceof KeyValuePair) {
 
         // Get the value and the textual content for the <option> element. 
         //
@@ -71,7 +71,7 @@ export class SelectWidget extends widget.Widget {
         //
         // Check if the value object is of this class, and if it is, if it is considered
         // selected (by checking its checked status).
-        if (values[i] instanceof checkbox.CheckboxItem && values[i].getChecked()) {
+        if (values[i] instanceof CheckboxItem && values[i].getChecked()) {
           indexes.push(value);
         }
       } else {
