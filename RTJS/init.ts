@@ -1,4 +1,76 @@
 module rtjs {
+  interface ILanguageCache {
+    name: string;
+    lang: IFrameworkLanguage;
+  };
+
+  export class Language {
+    private static defaultLanguage: string = "sv_SE";
+    private static inst: Language = undefined;
+    private currentLanguage: string;
+    private currentStrings: IFrameworkLanguage;
+
+    public static instance(): Language {
+      if (Language.inst == null) {
+        Language.inst = new Language();
+      }
+
+      return Language.inst;
+    }
+
+    public static current(): IFrameworkLanguage {
+      var inst = Language.instance();
+      return inst.strings();
+    }
+
+    constructor() {
+      this.currentLanguage = null;
+      this.strings = null;
+
+      var json = window.sessionStorage['rtjslang'];
+      if (json) {
+        var cacheItem: ILanguageCache = JSON.parse(json);
+
+        if (cacheItem) {
+          this.currentStrings = cacheItem.lang;
+          this.currentLanguage = cacheItem.name;
+        }
+      }
+    }
+
+    public initialize(cultureName: string, onCompleted?: () => void): void {
+      if (cultureName == null) {
+        cultureName = Language.defaultLanguage;
+      }
+
+      if (cultureName === this.currentLanguage) {
+        if (onCompleted) {
+          onCompleted.apply(this);
+        }
+
+        return;
+      }
+
+      require(['Globalization/lang.' + cultureName], (lang) => {
+        this.strings = lang;
+        this.currentLanguage = cultureName;
+
+        window.sessionStorage.setItem('rtjslang', JSON.stringify({ name: cultureName, lang: lang }));
+
+        if (onCompleted) {
+          onCompleted.apply(this);
+        }
+      }, () => {
+        // Something went wrong
+        alert('Failed to load language ' + cultureName + '.');
+      });
+    }
+
+    public strings(): IFrameworkLanguage {
+      return this.currentStrings;
+    }
+  }
+
   export class Initializer {
     public static rootPath: string = 'RTJS/';
     private isIE: boolean;
@@ -38,8 +110,10 @@ module rtjs {
       };
 
       $(window).ready(() => {
-        var initializer = new Initializer(null, false);
-        initializer.initialize(new BootstrapInitializer(), null);
+        Language.instance().initialize(null, () => {
+          var initializer = new Initializer(null, false);
+          initializer.initialize(new BootstrapInitializer(), null);
+        });
       });
     }
 

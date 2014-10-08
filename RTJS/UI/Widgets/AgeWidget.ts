@@ -19,14 +19,15 @@ export class AgeWidget extends widget.Widget {
       maxAge = this.params().maxage, //<input type="text" data-widget="age" data-widget-maxAge="50" />
       minAge = this.params().minage;
 
+    var lang = rtjs.Language.current();
     if (text.length < 1) {
-      this.validationError = ptk.lang.common.validation.missingAge;
+      this.validationError = lang.validation.missingAge;
       return false;
-    } else if (maxAge !== undefined && inputAge > maxAge) {
-      this.validationError = ptk.lang.common.validation.tooOld.format(maxAge);
+    } else if (maxAge && inputAge > maxAge) {
+      this.validationError = lang.validation.tooOld.format(maxAge.toString());
       return false;
-    } else if (minAge !== undefined && inputAge < minAge) {
-      this.validationError = ptk.lang.common.validation.tooYoung.format(minAge);
+    } else if (minAge && inputAge < minAge) {
+      this.validationError = lang.validation.tooYoung.format(minAge.toString());
       return false;
     }
 

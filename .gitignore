@@ -1,4 +1,5 @@
-RTJS/*.js
+*.js
+!Dependencies/*.js
 *.config
 *.sln
 *.suo
