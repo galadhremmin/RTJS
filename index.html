@@ -3,12 +3,14 @@
 <head>
   <title></title>
 </head>
-<body data-bootstrap="Example">
-  
+  <body data-bootstrap="Example" data-controller="Example">
+    <input type="text" data-widget="input" data-bind="name" />
+    <input type="button" data-widget="button" data-action="exampleButtonClicked" value="Submit" />
+    <span data-widget="label" data-bind="message"></span>
 
-  <script src="Dependencies/1.jquery.min.js"></script>
-  <script src="Dependencies/2.require.js"></script>
-  <script src="Dependencies/3.extensions.js"></script>
-  <script src="RTJS/init.js"></script>
-</body>
+    <script src="Dependencies/1.jquery.min.js"></script>
+    <script src="Dependencies/2.require.js"></script>
+    <script src="Dependencies/3.extensions.js"></script>
+    <script src="RTJS/init.js"></script>
+  </body>
 </html>
