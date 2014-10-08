@@ -1,4 +1,4 @@
-*.js
+RTJS/*.js
 *.config
 *.sln
 *.suo
