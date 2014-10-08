@@ -14,7 +14,7 @@ export class SelectWidget extends widget.Widget {
       throw 'The selectWidget must be used with <select>.';
     }
 
-    rootElement.customSelect();
+    // rootElement.customSelect(); TODO Implement custom select
     rootElement.on('change.widget', (event) => this.changeEvent(event));
   }
 

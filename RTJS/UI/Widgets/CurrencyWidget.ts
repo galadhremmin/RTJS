@@ -1,7 +1,8 @@
 ﻿/// <reference path="Abstract/Widget.ts"/>
 
 import widget = require("./Abstract/Widget");
-import util = require("RTJS/Util/Observable");
+import util = require("../../Util/Observable");
+import formatter = require("../../Util/Formatter");
 
 export class CurrencyWidget extends widget.FormattableWidget {
 
@@ -15,7 +16,7 @@ export class CurrencyWidget extends widget.FormattableWidget {
 
   public set(value: any): void {
     if (this.writeOnly()) {
-      value = ptk.formatter.format(this.formatter, value);
+      value = formatter.instance().format(this.formatter, value);
       this.rootElement.text(value + ' kr');
     } else {
       super.set(value);
@@ -61,7 +62,7 @@ export class CurrencyWidget extends widget.FormattableWidget {
       if (isNaN(value)) {
         this.validationError = rtjs.Language.current().validation.missingCurrency.format(elementName);
       } else if (value > max) {
-        this.validationError = rtjs.Language.current().validation.integerTooBig.format(elementName, ptk.formatter.format('thousand', max));
+        this.validationError = rtjs.Language.current().validation.integerTooBig.format(elementName, formatter.instance().format('thousand', max));
       }
 
       result = false;

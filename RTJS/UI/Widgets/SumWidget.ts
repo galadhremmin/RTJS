@@ -1,4 +1,5 @@
 ﻿import widget = require("./Abstract/Widget");
+import formatter = require("../../Util/Formatter");
 
 /**
   * Intended for table footers. Will bind to an array of data, iterate through all array items, find the value of 'data-path' for each object, and summarize these for the whole array.
@@ -43,7 +44,7 @@ export class SumWidget extends widget.ViewOnlyWidget {
     // Can use formatters as well! wow such flexible!
     formatter = elem.data('value-format');
     if (formatter) {
-      sum = ptk.formatter.format(formatter, sum);
+      sum = formatter.format(formatter, sum);
     }
 
     if (sumPrefix) {

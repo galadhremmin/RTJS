@@ -1,5 +1,6 @@
-﻿import util = require("RTJS/Util/Observable");
-import dataTool = require("RTJS/Util/SessionStorage");
+﻿import util = require("../../../Util/Observable");
+import dataTool = require("../../../Util/SessionStorage");
+import format = require("../../../Util/Formatter")
 
 /**
   * Represents a user interface component which supports binding and content generation.
@@ -341,13 +342,13 @@ export class FormattableWidget extends Widget {
     this.supportsInput = this.rootElement.is('input,textarea');
 
     if (this.supportsInput && this.formatter) {
-      ptk.formatter.install(this.rootElement, this.formatter);
+      format.instance().install(this.rootElement, this.formatter);
     }
   }
 
   public set(value: any): void {
     if (this.formatter) {
-      value = ptk.formatter.format(this.formatter, value);
+      value = format.instance().format(this.formatter, value);
     }
 
     super.set(value);
@@ -363,7 +364,7 @@ export class FormattableWidget extends Widget {
 
     var value = this.rootElement.val();
     if (this.formatter) {
-      value = ptk.formatter.unformat(this.formatter, value);
+      value = format.instance().unformat(this.formatter, value);
     }
 
     return value;
@@ -382,7 +383,7 @@ export class ChartWidget extends ViewOnlyWidget {
   private chart: any;
 
   public create(): void {
-    this.chart = ptk.charts.chart('#' + this.id(), this.settings());
+    this.chart = null; // TODO: implement HighCharts (.charts.chart('#' + this.id(), this.settings());)
   }
 
   public render(): void {

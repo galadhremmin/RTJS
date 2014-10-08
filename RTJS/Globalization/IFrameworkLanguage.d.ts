@@ -30,4 +30,7 @@ interface IFrameworkValidationLanguage {
   missingYear: string; // {0} 
   futureYear: string;
   pastYear: string;
+
+  // Percentage
+  percentageOutOfBounds: string; // {0}
 }

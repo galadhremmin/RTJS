@@ -10,7 +10,7 @@ module rtjs {
     private currentLanguage: string;
     private currentStrings: IFrameworkLanguage;
 
-    private static instance(): Language {
+    public static instance(): Language {
       if (Language.inst == null) {
         Language.inst = new Language();
       }

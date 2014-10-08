@@ -20,7 +20,9 @@
 
     missingYear: '{0} saknar år.',
     futureYear: 'År i framtiden',
-    pastYear: 'År 100 år sedan.'
+    pastYear: 'År 100 år sedan.',
+
+    percentageOutOfBounds: 'Du kan inte välja mer än 100 %.'
   }
 };
 

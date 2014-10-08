@@ -34,7 +34,7 @@ export class PercentageWidget extends widget.FormattableWidget {
         throw 'There is no label associated with this element: ' + this.id();
       }
 
-      this.validationError = ptk.lang.common.validation['percentage'].format(elementName);
+      this.validationError = rtjs.Language.current().validation.percentageOutOfBounds.format(elementName);
 
       result = false;
     }
