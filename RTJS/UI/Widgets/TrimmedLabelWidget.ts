@@ -11,10 +11,6 @@ import widget = require("./LabelWidget");
 export class TrimmedLabelWidget extends widget.LabelWidget {
     
   public set (value: any): void {
-    if ((!value || value == "") && this.rootElement.data('changeEmptyValue')) { // data-change-empty-value attribute on element. If true, set a new defined value
-      value = ptk.lang.pages.userSummary.userDataTable.missing;;
-    }
-
     super.set(value);
     this.ellipsisTrim();
   }

@@ -36,15 +36,15 @@ define(["require", "exports", "./Abstract/Widget", "RTJS/Util/Observable"], func
 
             if (this.rootElement.is(':visible')) {
                 if (isNaN(parseInt(year, 10))) {
-                    this.validationError = ptk.lang.common.validation['year'].format(elementName);
+                    this.validationError = rtjs.Language.current().validation.missingYear.format(elementName);
                     return false;
                 }
                 if (year > thisYear) {
-                    this.validationError = ptk.lang.common.validation['futureYear'];
+                    this.validationError = rtjs.Language.current().validation.futureYear;
                     return false;
                 }
                 if (year < (thisYear - 100)) {
-                    this.validationError = ptk.lang.common.validation['pastYear'];
+                    this.validationError = rtjs.Language.current().validation.pastYear;
                     return false;
                 }
             }

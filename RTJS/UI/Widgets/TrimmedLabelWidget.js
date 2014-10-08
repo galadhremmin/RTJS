@@ -18,11 +18,6 @@ define(["require", "exports", "./LabelWidget"], function(require, exports, widge
             _super.apply(this, arguments);
         }
         TrimmedLabelWidget.prototype.set = function (value) {
-            if ((!value || value == "") && this.rootElement.data('changeEmptyValue')) {
-                value = ptk.lang.pages.userSummary.userDataTable.missing;
-                ;
-            }
-
             _super.prototype.set.call(this, value);
             this.ellipsisTrim();
         };

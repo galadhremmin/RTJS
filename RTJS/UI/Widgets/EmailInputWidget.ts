@@ -37,7 +37,7 @@ export class EmailInputWidget extends widget.Widget {
       text = elem.val();
 
     if ((text.length < 1 && !emptyEmailValid) || !this.isValidEmail(text, emptyEmailValid)) {
-      this.validationError = ptk.lang.common.validation.email;
+      this.validationError = rtjs.Language.current().validation.missingEmail;
       return false;
     }
 
@@ -45,7 +45,7 @@ export class EmailInputWidget extends widget.Widget {
       siblingText = $('#' + siblingId).val();
 
       if (siblingText.toLowerCase() !== text.toLowerCase()) {
-        this.validationError = ptk.lang.common.validation.emailDoesNotMatch;
+        this.validationError = rtjs.Language.current().validation.emailMismatch;
         return false;
       }
     }

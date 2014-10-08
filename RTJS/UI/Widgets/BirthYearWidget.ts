@@ -15,6 +15,7 @@ export class BirthYearWidget extends widget.YearWidget {
     }
 
     if (this.rootElement.is(':visible')) {
+      var lang = rtjs.Language.current();
 
       if (year.length < 4) {
         // Fetch the associated label for this element
@@ -23,7 +24,7 @@ export class BirthYearWidget extends widget.YearWidget {
         // Order of acquiring: 1) label text, 2) element ID, 3) element name 
         elementName = associatedLabel.length ? associatedLabel.text() : (this.id() || this.rootElement.attr('name'));
 
-        this.validationError = ptk.lang.common.validation['year'].format(elementName);
+        this.validationError = lang.validation.missingBirthYear.format(elementName);
 
         return false;
       }
@@ -31,12 +32,12 @@ export class BirthYearWidget extends widget.YearWidget {
       parsedYear = new Date(year + '/01/01').getFullYear();
 
       if (parsedYear > thisYear) {
-        this.validationError = ptk.lang.common.validation['futureBirthYear'];
+        this.validationError = lang.validation.futureBirthYear;
         return false;
       }
 
       if (parsedYear < (thisYear - 100)) {
-        this.validationError = ptk.lang.common.validation['pastBirthYear'];
+        this.validationError = lang.validation.pastBirthYear;
         return false;
       }
     }

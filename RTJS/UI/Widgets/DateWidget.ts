@@ -39,24 +39,25 @@ export class DateWidget extends widget.FormattableWidget {
     }
 
     //validate that it is a correct date (including checks for leap year). If not, show error message
+    var lang = rtjs.Language.current();
     if (date <= today) {
       if (day > 31 || day < 1 || month > 12 || month < 1) { //js Date-object will parse these values, so we need an extra check.
-        this.validationError = ptk.lang.common.validation.wrongDate;
+        this.validationError = lang.validation.wrongDate;
         return false;
       } else if (day >= 31 && (month == 4 || month == 6 || month == 9 || month == 11)) { //months with 30 days. Observe that only two "equals" chars are used by design
-        this.validationError = ptk.lang.common.validation.wrongDate;
+        this.validationError = lang.validation.wrongDate;
         return false;
       } else if (this.isLeapYear(year) && day == 29 && month == 2) { //february 29 if leap year
         return super.validate('date');
       } else if (day >= 29 && month == 2) { //february with 29 or more days
-        this.validationError = ptk.lang.common.validation.wrongDate;
+        this.validationError = lang.validation.wrongDate;
         return false;
       } else if (date < a100YearsAgo) {
-        this.validationError = ptk.lang.common.validation.pastYear;
+        this.validationError = lang.validation.dateIs100YearsAgo;
         return false;
       }
     } else {
-      this.validationError = ptk.lang.common.validation.futureYear;
+      this.validationError = lang.validation.dateIntoFuture;
       return false;
     }
 

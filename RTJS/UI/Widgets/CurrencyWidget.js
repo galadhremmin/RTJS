@@ -60,9 +60,9 @@ define(["require", "exports", "./Abstract/Widget", "RTJS/Util/Observable"], func
                 }
 
                 if (isNaN(value)) {
-                    this.validationError = ptk.lang.common.validation['integer'].format(elementName);
+                    this.validationError = rtjs.Language.current().validation.missingCurrency.format(elementName);
                 } else if (value > max) {
-                    this.validationError = ptk.lang.common.validation['integerTooBig'].format(elementName, ptk.formatter.format('thousand', max));
+                    this.validationError = rtjs.Language.current().validation.integerTooBig.format(elementName, ptk.formatter.format('thousand', max));
                 }
 
                 result = false;

@@ -34,24 +34,25 @@ define(["require", "exports", "./Abstract/Widget"], function(require, exports, w
             }
 
             //validate that it is a correct date (including checks for leap year). If not, show error message
+            var lang = rtjs.Language.current();
             if (date <= today) {
                 if (day > 31 || day < 1 || month > 12 || month < 1) {
-                    this.validationError = ptk.lang.common.validation.wrongDate;
+                    this.validationError = lang.validation.wrongDate;
                     return false;
                 } else if (day >= 31 && (month == 4 || month == 6 || month == 9 || month == 11)) {
-                    this.validationError = ptk.lang.common.validation.wrongDate;
+                    this.validationError = lang.validation.wrongDate;
                     return false;
                 } else if (this.isLeapYear(year) && day == 29 && month == 2) {
                     return _super.prototype.validate.call(this, 'date');
                 } else if (day >= 29 && month == 2) {
-                    this.validationError = ptk.lang.common.validation.wrongDate;
+                    this.validationError = lang.validation.wrongDate;
                     return false;
                 } else if (date < a100YearsAgo) {
-                    this.validationError = ptk.lang.common.validation.pastYear;
+                    this.validationError = lang.validation.dateIs100YearsAgo;
                     return false;
                 }
             } else {
-                this.validationError = ptk.lang.common.validation.futureYear;
+                this.validationError = lang.validation.dateIntoFuture;
                 return false;
             }
 

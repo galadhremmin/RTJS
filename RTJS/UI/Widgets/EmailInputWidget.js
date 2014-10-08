@@ -35,7 +35,7 @@ define(["require", "exports", "./Abstract/Widget"], function(require, exports, w
             var elem = this.rootElement, siblingId = elem.data('validate-against'), siblingText = '', emptyEmailValid = elem.data('validate-allow-empty'), text = elem.val();
 
             if ((text.length < 1 && !emptyEmailValid) || !this.isValidEmail(text, emptyEmailValid)) {
-                this.validationError = ptk.lang.common.validation.email;
+                this.validationError = rtjs.Language.current().validation.missingEmail;
                 return false;
             }
 
@@ -43,7 +43,7 @@ define(["require", "exports", "./Abstract/Widget"], function(require, exports, w
                 siblingText = $('#' + siblingId).val();
 
                 if (siblingText.toLowerCase() !== text.toLowerCase()) {
-                    this.validationError = ptk.lang.common.validation.emailDoesNotMatch;
+                    this.validationError = rtjs.Language.current().validation.emailMismatch;
                     return false;
                 }
             }
