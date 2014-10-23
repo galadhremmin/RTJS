@@ -2,7 +2,7 @@ module rtjs {
   interface ILanguageCache {
     name: string;
     lang: IFrameworkLanguage;
-  };
+  }
 
   export class Language {
     private static defaultLanguage: string = "sv_SE";
