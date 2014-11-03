@@ -18,9 +18,10 @@
         while (res = exp.exec(s)) {
           replacement = arguments[i];
           
+          /*
           if (res.length > 2) {
-            replacement = ptk.formatter.format(res[2], replacement);
-          }
+            replacement = rtjs.formatter.format(res[2], replacement);
+          }*/
 
           result = result.replace(res[0], replacement);
         }
