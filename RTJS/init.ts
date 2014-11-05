@@ -327,10 +327,12 @@ module rtjs {
     /**
      * An instance of a model is shared. This map enables this by storing initialized models.
      */
-    private loadedModelsMap: any;
+    private static loadedModelsMap: any = null;
 
     constructor() {
-      this.loadedModelsMap = {};
+      if (!BootstrapInitializer.loadedModelsMap) {
+        BootstrapInitializer.loadedModelsMap = {};
+      }
     }
 
     public getElements(rootElement: JQuery): JQuery {
@@ -421,11 +423,11 @@ module rtjs {
       }
 
       // Initialize an instance of the model, or used an existing one (if shared)
-      if (!this.loadedModelsMap[initializingModule.modelRef.index]) {
-        this.loadedModelsMap[initializingModule.modelRef.index] = new initializingModule.modelRef.blueprint();
+      if (!BootstrapInitializer.loadedModelsMap[initializingModule.modelRef.name]) {
+        BootstrapInitializer.loadedModelsMap[initializingModule.modelRef.name] = new initializingModule.modelRef.blueprint();
       }
 
-      model = this.loadedModelsMap[initializingModule.modelRef.index];
+      model = BootstrapInitializer.loadedModelsMap[initializingModule.modelRef.name];
 
       for (i = 0; i < initializingModule.controllers.length; i += 1) {
         // Initialize an instance of the controller
