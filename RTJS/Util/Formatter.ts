@@ -21,7 +21,7 @@ module rtjs.formatter {
       // Remove all non-numeric characters from the input string
       s = String(s).replace(/[^0-9]/g, '');
 
-      value = (s.length < 1) ? 0 : value;
+      value = (s.length < 1) ? 0 : s;
       return (value && isNegative) ? (-1) * value : value;
     }
 
@@ -243,8 +243,8 @@ module rtjs.formatter {
 }
 
 interface IFormattingHook {
-  withoutFormatter(el: JQuery): string;
-  withFormatter(el: JQuery, formatter: IFormatter): string;
+  withoutFormatter(el: HTMLElement): string;
+  withFormatter(el: HTMLElement, formatter: IFormatter): string;
 }
 
 class Formatter {
@@ -274,10 +274,10 @@ class Formatter {
     var formatter = this.getFormatterByElement(el);
 
     if (!formatter) {
-      return context.withoutFormatter(el);
+      return context.withoutFormatter(el.get(0));
     }
 
-    return context.withFormatter(el, formatter);
+    return context.withFormatter(el.get(0), formatter);
   }
 
   public format(formatName: string, value: any): string {
@@ -300,18 +300,32 @@ class Formatter {
 
   private installFormatter(): void {
     var origHook = $.valHooks.text || undefined; // preserve existing value hooks if such exist
+    var getValue = (elem: HTMLElement) => {
+      var value: string;
+
+      if (/input|textarea/i.test(elem.nodeName)) {
+        value = (<HTMLInputElement> elem).value;
+      } else if (/select/.test(elem.nodeName)) {
+        value = (<HTMLSelectElement> elem).options[(<HTMLSelectElement> elem).selectedIndex].value;
+      } else {
+        value = elem.innerText;
+      }
+
+      return value;
+    };
 
     $.valHooks.text = {
       get: function (el) {
         return Formatter.instance().formatHook($(el), {
           // Behaviour with formatter 
           withFormatter: function (elem, formatter) {
-            return formatter.unformat($(elem).val());
+            var value = getValue(elem);
+            return formatter.unformat(value);
           },
 
           // Behaviour without formatter
           withoutFormatter: function (elem) {
-            return origHook ? origHook.get($(elem).get(0)) : $(elem).val();
+            return origHook ? origHook.get(elem) : getValue(elem);
           }
         });
       },
@@ -402,7 +416,13 @@ class Formatter {
   }
 
   private formatName(name: string): string {
-    return name.substr(0, 1).toUpperCase() + name.substr(1);
+    name = name.substr(0, 1).toUpperCase() + name.substr(1);
+
+    if (name.length < 11 || name.substr(-10) !== 'Formatter') {
+      name += 'Formatter';
+    }
+
+    return name;
   }
 }
 

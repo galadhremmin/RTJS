@@ -334,6 +334,11 @@ export class FormattableWidget extends Widget {
   constructor(rootElement: JQuery, parameters: Object, formatterName?: string) {
     super(rootElement, parameters);
 
+    var existingFormatter = this.rootElement.data('value-format');
+    if (existingFormatter) {
+      formatterName = existingFormatter;
+    }
+
     if (formatterName !== undefined) {
       this.rootElement.data('value-format', formatterName);
     }
