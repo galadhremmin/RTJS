@@ -31,20 +31,24 @@ module rtjs.formatter {
     }
   }
 
-  export class CurrencyFormatter implements IFormatter {
-    private formatter: ThousandFormatter;
-
-    constructor() {
-      this.formatter = new ThousandFormatter();
-    }
-
-    public unformat(s: any): string {
-      return this.formatter.unformat(s);
-    }
-
+  export class CurrencyFormatter extends ThousandFormatter {
     public format(s: any): string {
-      s = this.formatter.format(s);
+      s = super.format(s);
       return s + ' kr';
+    }
+  }
+
+  export class DotCurrencyFormatter extends ThousandFormatter {
+    public format(s: any): string {
+      s = super.format(s);
+      return s.replace(/\s/g, '.');
+    }
+  }
+
+  export class QuirkyCurrencyFormatter extends DotCurrencyFormatter {
+    public format(s: any): string {
+      s = super.format(s);
+      return s.replace(/\s/g, '.') + ' kr';
     }
   }
 
@@ -299,33 +303,23 @@ class Formatter {
   }
 
   private installFormatter(): void {
-    var origHook = $.valHooks.text || undefined; // preserve existing value hooks if such exist
-    var getValue = (elem: HTMLElement) => {
-      var value: string;
-
-      if (/input|textarea/i.test(elem.nodeName)) {
-        value = (<HTMLInputElement> elem).value;
-      } else if (/select/.test(elem.nodeName)) {
-        value = (<HTMLSelectElement> elem).options[(<HTMLSelectElement> elem).selectedIndex].value;
-      } else {
-        value = elem.innerText;
-      }
-
-      return value;
-    };
+    var origHook = $.valHooks.text || {
+      get: (elem: HTMLInputElement): string => elem.value,
+      set: (elem: HTMLInputElement, value: string): string => (elem.value = value)
+    }; // preserve existing value hooks if such exist
 
     $.valHooks.text = {
       get: function (el) {
         return Formatter.instance().formatHook($(el), {
           // Behaviour with formatter 
           withFormatter: function (elem, formatter) {
-            var value = getValue(elem);
+            var value = origHook.get(elem);
             return formatter.unformat(value);
           },
 
           // Behaviour without formatter
           withoutFormatter: function (elem) {
-            return origHook ? origHook.get(elem) : getValue(elem);
+            return origHook.get(elem);
           }
         });
       },
@@ -334,18 +328,12 @@ class Formatter {
           // Behaviour with formatter
           withFormatter: function (elem, formatter) {
             val = formatter.format(val);
-            $(elem).val(val);
-            return val;
+            return origHook.set(elem, val);
           },
 
           // Behaviour without formatter
           withoutFormatter: function (elem) {
-            if (origHook) {
-              return origHook.set($(elem).get(0), val);
-            } else {
-              $(elem).val(val);
-              return val;
-            }
+            return origHook.set(elem, val);
           }
         });
       }
@@ -376,9 +364,9 @@ class Formatter {
 
       }
     }).on('blur', function () {
-      var f = me.getFormatterByElement($(this));
-      this.value = f.format(this.value);
-    });
+        var f = me.getFormatterByElement($(this));
+        this.value = f.format(this.value);
+      });
   }
 
   private setCaretPosition(element: JQuery, pos: number, ieOnly: boolean): void {
