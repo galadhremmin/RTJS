@@ -1,8 +1,8 @@
-﻿import IModel = require("../../Model/Abstract/IModel");
+﻿import Model = require("../../Model/Abstract/Model");
 import views = require("../../UI/Views/View");
 import Controller = require("../../UI/Controllers/Abstract/Controller");
 
-class Bootstrap<TModel extends IModel> {
+class Bootstrap<TModel extends Model> {
   constructor(public controllers: rtjs.LoadedControllerMap, public repository: TModel) {
 
   }
@@ -13,7 +13,7 @@ class Bootstrap<TModel extends IModel> {
     });
   }
 
-  public findController(name: string, id?: string): Array<Controller<views.View, IModel>> {
+  public findController(name: string, id?: string): Array<Controller<views.View, Model>> {
     var className = rtjs.Initializer.getClassName(name + 'Controller', false);
     var controllers = this.controllers.get(className);
 

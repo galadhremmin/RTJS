@@ -1,10 +1,10 @@
 ﻿import views = require("../Views/View");
 import Controller = require("./Abstract/Controller");
-import IModel = require("../../Model/Abstract/IModel");
+import Model = require("../../Model/Abstract/Model");
   
-export class DefaultController extends Controller<views.View, IModel> {
+export class DefaultController extends Controller<views.View, Model> {
     
-  constructor(rootElement: JQuery, model: IModel) {
+  constructor(rootElement: JQuery, model: Model) {
 
     super(new views.View(rootElement), model);
 

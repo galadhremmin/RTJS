@@ -1,12 +1,8 @@
-﻿import IModel = require("./IModel");
+﻿import Model = require("./Model");
 import observer = require("../../Util/Observable");
 import SessionStorage = require("../../Util/SessionStorage");
 
-export interface IGuideModel extends IModel {
-  createSession(resume: boolean, callback: () => void);
-}
-
-export class SvcModel extends observer.Observable implements IModel {
+export class SvcModel extends observer.Observable implements Model {
   private requests: Array<SvcRequest>;
   private working: boolean;
 

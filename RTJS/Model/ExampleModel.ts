@@ -1,6 +1,6 @@
-﻿import IModel = require("./Abstract/IModel");
+﻿import Model = require("./Abstract/Model");
 import observable = require("../Util/Observable");
 
-export class ExampleModel extends observable.Observable implements IModel {
+export class ExampleModel extends Model {
   
 }

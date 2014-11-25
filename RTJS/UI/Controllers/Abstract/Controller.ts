@@ -1,9 +1,9 @@
 ﻿import views = require("../../Views/View");
 import util = require("../../../Util/Observable");
-import IModel = require("../../../Model/Abstract/IModel");
+import Model = require("../../../Model/Abstract/Model");
 import ActionManager = require("../../../Util/ActionManager");
 
-class Controller<TView extends views.View, TModel extends IModel> implements util.IObserver {
+class Controller<TView extends views.View, TModel extends Model> implements util.IObserver {
     
   private actionManager: ActionManager;
 
