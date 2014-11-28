@@ -2,11 +2,11 @@
 
 import widget = require("./Abstract/Widget");
 import util = require("../../Util/Observable");
-  
+
 export class SliderWidget extends widget.Widget {
-    
+
   private startX;
-  private endX; 
+  private endX;
   private handleW;
   private precision;
   private steps;
@@ -20,7 +20,7 @@ export class SliderWidget extends widget.Widget {
     var $elem = this.rootElement;
     $elem.addClass('widget-slider');
 
-    var ball = $('<a href="#">Handtag</a>');
+    var ball = $('<a href="#"></a>');
     ball.click((ev: any) => {
       if (ev.preventDefault) {
         ev.preventDefault();
@@ -37,7 +37,7 @@ export class SliderWidget extends widget.Widget {
     this.rootElement.append('<div class="widget-slider-space"><div class="marked-area"></div><div class="shadow"></div></div>');
 
     //We need to recalculate the offsets for the slider if the user resizes the window while it is onscreen.
-    $(window).on('resize.recalcslider', () => () => this.recalculatePositions());
+    $(window).on('resize.recalcslider', () => this.recalculatePositions());
 
     window.setTimeout(() => this.set(this.params().min), 0);
   }
@@ -55,7 +55,8 @@ export class SliderWidget extends widget.Widget {
         max: setup.max,
         step: setup.step,
         markedLeft: setup.markedLeft,
-        markedRight: setup.markedRight
+        markedRight: setup.markedRight,
+        markedBehavior: setup.markedBehavior
       };
 
       this.steps = undefined;
@@ -66,6 +67,9 @@ export class SliderWidget extends widget.Widget {
     }
 
     if (v === undefined || v === null || isNaN(v)) {
+      return;
+    }
+    if (v === this.value) {
       return;
     }
 
@@ -121,25 +125,34 @@ export class SliderWidget extends widget.Widget {
     if (this.params().markedRight == null ||
       this.params().markedRight == undefined &&
       this.params().markedLeft == null ||
-      this.params().markedRight == undefined) {
+      this.params().markedLeft == undefined) {
       return;
     }
 
-    var marker = $('.marked-area', this.rootElement),
-      markedRight = this.params().markedRight,
-      markedLeft = this.params().markedLeft;
+    var behavior = this.params().markedBehavior || SliderMarkedAreaBehavior.Normal;
+
+    this.setMarked(behavior, this.params().markedLeft, this.params().markedRight);
+  }
+
+  private setMarked(behavior: SliderMarkedAreaBehavior, markedLeft?: number, markedRight?: number) {
+    var marker = $('.marked-area', this.rootElement);
+
+    marker.removeClass('left-end-marked right-end-marked');
 
     if (!markedLeft || markedLeft <= this.params().min) {
       markedLeft = this.params().min;
-      marker.addClass('left-radius');
+      marker.addClass('left-end-marked');
     }
     if (!markedRight || markedRight >= this.params().max) {
       markedRight = this.params().max;
-      marker.addClass('right-radius');
+      marker.addClass('right-end-marked');
     }
 
-    var rightPosition = this.calculateRelativePosition(this.positionXForValue(markedRight), 0),
-      leftPosition = this.calculateRelativePosition(this.positionXForValue(markedLeft), 0),
+    var leftEnd = (behavior == SliderMarkedAreaBehavior.StickyLeft) ? this.value : markedLeft;
+    var rightEnd = (behavior == SliderMarkedAreaBehavior.StickyRight) ? this.value : markedRight;
+
+    var rightPosition = this.calculateRelativePosition(this.positionXForValue(rightEnd), 0),
+      leftPosition = this.calculateRelativePosition(this.positionXForValue(leftEnd), 0),
       markedWidth = rightPosition.position - leftPosition.position;
 
     marker[0].style.width = markedWidth + 'px';
@@ -215,7 +228,7 @@ export class SliderWidget extends widget.Widget {
   }
 
   private slide(ev: any): void {
-    var x;
+    var x, p;
 
     if (ev.originalEvent && ev.originalEvent.touches && ev.originalEvent.touches.length) {
       x = ev.originalEvent.touches[0].pageX;
@@ -235,6 +248,17 @@ export class SliderWidget extends widget.Widget {
     this.value = calculatedPositionData.val;
 
     (<HTMLElement> this.rootElement.get(0).firstChild).style.left = calculatedPositionData.position + 'px';
+
+    p = this.params();
+    if (p.markedBehavior != null && p.markedBehavior != undefined && p.markedBehavior != SliderMarkedAreaBehavior.Normal) {
+      var markedArea = this.rootElement.find('.marked-area')[0];
+
+      if (p.markedBehavior == SliderMarkedAreaBehavior.StickyLeft) {
+        this.setMarked(p.markedBehavior, calculatedPositionData.val, p.markedRight);
+      } else if (p.markedBehavior == SliderMarkedAreaBehavior.StickyRight) {
+        this.setMarked(p.markedBehavior, p.markedLeft, calculatedPositionData.val);
+      }
+    }
 
     if (this.lastReportedValue !== this.value) {
       this.notify(new util.Notification('change', this.rootElement, this.action(), this.get()));
@@ -292,6 +316,7 @@ interface IConfiguration {
   min: number;
   markedLeft?: number;
   markedRight?: number;
+  markedBehavior?: SliderMarkedAreaBehavior;
 }
 
 interface IPositionData {
@@ -305,7 +330,13 @@ interface IPositionData {
 
 export class SliderSetup {
 
-  constructor(public min: number, public max: number, public step: number, public initialValue?: number, public markedLeft?: number, public markedRight?: number) {
+  constructor(public min: number, public max: number, public step: number, public initialValue?: number, public markedLeft?: number, public markedRight?: number, public markedBehavior?: SliderMarkedAreaBehavior) {
   }
 
-} 
+}
+
+export enum SliderMarkedAreaBehavior {
+  Normal,
+  StickyLeft,
+  StickyRight
+}
