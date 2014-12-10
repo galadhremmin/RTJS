@@ -387,6 +387,10 @@ class Formatter {
   }
 
   private getFormatterByName(formatterName: string): IFormatter {
+    if (!formatterName) {
+      return null;
+    }
+
     formatterName = this.formatName(formatterName);
 
     if (this.formatters.hasOwnProperty(formatterName)) {
@@ -404,6 +408,10 @@ class Formatter {
   }
 
   private formatName(name: string): string {
+    if (!name) {
+      return null;
+    }
+
     name = name.substr(0, 1).toUpperCase() + name.substr(1);
 
     if (name.length < 11 || name.substr(-10) !== 'Formatter') {
