@@ -58,7 +58,7 @@ class NavigationController<TView extends views.View, TModel extends Model> exten
     this.activeFragments[fragmentName] = value;
 
     var methodName = this.formatForMethodName(fragmentName) + 'NavigateIn';
-    if (this.hasOwnProperty(methodName)) {
+    if (this[methodName]) {
       this[methodName].call(this, value);
     }
   }
@@ -75,7 +75,7 @@ class NavigationController<TView extends views.View, TModel extends Model> exten
     delete this.activeFragments[fragmentName];
 
     var methodName = this.formatForMethodName(fragmentName) + 'NavigateOut';
-    if (this.hasOwnProperty(methodName)) {
+    if (this[methodName]) {
       this[methodName].call(this);
     }
   }
