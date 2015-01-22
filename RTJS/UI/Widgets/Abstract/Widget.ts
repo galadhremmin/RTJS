@@ -8,8 +8,9 @@ import format = require("../../../Util/Formatter")
   * This component can be stateful if the necessary methods are implemented.
   */
 export class Widget extends util.Observable {
-    
+
   public validationError: string;
+  private withinViewport: boolean;
 
   constructor(public rootElement: JQuery, public parameters: Object) {
     super();
@@ -34,6 +35,10 @@ export class Widget extends util.Observable {
           this._lastBindingSourceDigest(0);
         }
       });
+    }
+
+    if (rootElement.data('viewport-tracking')) {
+      this.setViewportTracking();
     }
   }
 
@@ -180,8 +185,60 @@ export class Widget extends util.Observable {
         this.rootElement[status.visible ? 'show' : 'hide'](duration);
       }
     }
-    
+
     return status;
+  }
+
+  /**
+   * Configure the widget to notify when it scrolls into the viewport (or a scaled version thereof), and when it leaves it.
+   * Can also just specify a hard offset from top of viewport to mean "in viewport", or both offset and scale.
+   * Don't overuse. Probably quite heavy since it listens to DOMContentLoaded, load, resize, and scroll. SCROLL!
+   */
+  private setViewportTracking(): void {
+    var offsetTop : number = this.rootElement.data('viewport-offset-top') || 0;
+    var viewportScale : number = this.rootElement.data('viewport-vertical-scale') || 1;
+    var viewportClass : string = this.rootElement.data('viewport-class') || 'viewport-tracking-visible';
+
+    // Viewport scale is used by adding offsets, so has to convert this to the amount of
+    // viewport height to add to top and bottom to get viewportScalePercent * viewport.height.
+    var viewportFractionOffset = 1 - viewportScale;
+
+    $(window).on('DOMContentLoaded load resize scroll', () => {
+      if (!this.rootElement.is(':visible')) {
+        return;
+      }
+
+      var withinViewport = this.isVisibleInViewport(offsetTop, viewportFractionOffset);
+      var element = this.getViewportTrackingElement();
+
+      if (this.withinViewport !== withinViewport) {
+        if (withinViewport) {
+          element.addClass(viewportClass);
+        } else {
+          element.removeClass(viewportClass);
+        }
+
+        this.withinViewport = withinViewport;
+        this.notify(new util.Notification('viewport-status-change', this, null, withinViewport ? 'enter' : 'leave'));
+      }
+    });
+  }
+
+  public getViewportTrackingElement(): JQuery {
+    return this.rootElement;
+  }
+
+  private isVisibleInViewport(offsetTop: number, viewportFraction: number): boolean {
+    var rect = this.rootElement[0].getBoundingClientRect(),
+        wh = window.innerHeight,
+        ww = window.innerWidth;
+
+    return (
+      rect.top    >= rect.height &&
+      rect.bottom <= offsetTop + (wh * viewportFraction) &&
+      rect.left   >= 0 &&
+      rect.right  <= ww
+    );
   }
 
   private validateVisibilityExpression(expression: string, data: any): boolean {
@@ -268,7 +325,7 @@ export class Widget extends util.Observable {
       this.rootElement.text(value);
     } else {
       this.rootElement.val(value);
-      this.rootElement.trigger('change', [ /* setTriggered: */ true ]);
+      this.rootElement.trigger('change', [ /* setTriggered: */ true]);
     }
   }
 
@@ -287,7 +344,7 @@ export class Widget extends util.Observable {
   public writeOnly(): boolean {
     return false;
   }
-  
+
   /**
     * Recalculates and repaints the widget.
     */
@@ -306,7 +363,7 @@ export class ViewOnlyWidget extends Widget {
   public get(): any {
     return undefined;
   }
-    
+
   public writeOnly(): boolean {
     return true;
   }
@@ -327,7 +384,7 @@ export class ViewOnlyWidget extends Widget {
   * This component can be stateful if the necessary methods are implemented.
   */
 export class FormattableWidget extends Widget {
-    
+
   public formatter;
   private supportsInput;
 
@@ -400,7 +457,7 @@ export class ChartWidget extends ViewOnlyWidget {
   public settings(): IChartSettings {
     return {};
   }
-    
+
   public set(value: any, changedConfig?: HighchartsOptions): void {
     if (this.chart) {
       if (changedConfig) {
@@ -460,8 +517,8 @@ export class VisibilityStatus {
 }
 
 class ValidationManager {
-  
-  public static validate(data: IValidationData[], feedbackLabelSelector: JQuery, ignoreIfHidden: boolean):  boolean {
+
+  public static validate(data: IValidationData[], feedbackLabelSelector: JQuery, ignoreIfHidden: boolean): boolean {
     /// <summary>Validates the specified data fields and provides error messages upon failure. The validation process is halted upon first failure.</summary>
     /// <param name="data" type="Array">An array of configuration objects (other is optional): { selector: '#element', type: 'integer|boolean|date|year|regexp', name: 'Element name', other: /^IfRegularExp$/ }</param>
     /// <returns>True if the form is valid</returns>
