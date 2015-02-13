@@ -437,61 +437,6 @@ export class FormattableWidget extends Widget {
   }
 }
 
-/**
-  * Represents a charting widget which supports one-directonal binding.
-  */
-export class ChartWidget extends ViewOnlyWidget {
-
-  private chart: any;
-
-  public create(): void {
-    this.chart = null; // TODO: implement HighCharts (.charts.chart('#' + this.id(), this.settings());)
-  }
-
-  public render(): void {
-    if (this.chart && this.chart.needsRender()) {
-      this.chart.render();
-    }
-  }
-
-  public settings(): IChartSettings {
-    return {};
-  }
-
-  public set(value: any, changedConfig?: HighchartsOptions): void {
-    if (this.chart) {
-      if (changedConfig) {
-        this.chart.updateConfig(changedConfig);
-      }
-
-      this.chart.setData(value);
-    }
-  }
-
-}
-
-export interface IChartSettings {
-  data?: any;
-  settings?: IChartSettingsList;
-}
-
-export interface IChartSettingsList {
-  categories?: any[];
-  margin?: number[];
-  tooltipPositioner?: any;
-  tooltipFormatter?: () => string;
-  yLabelFormatter?: () => number;
-  animationDuration?: number;
-  yTickInterval?: number;
-  xMin?: number;
-  xMax?: number;
-  columnWidth?: number;
-  connectLineOverNulls?: boolean;
-  horizontalTitle?: string;
-  verticalTitle?: string;
-  pointPadding?: number;
-}
-
 export class VisibilityStatus {
   /**
    * Gets whether the widget is visible before the binding has happened.
