@@ -304,6 +304,7 @@ module rtjs {
         }
 
         loadedModule = loadedDependencies[reference.index];
+        loadedModule._rtjsModule = true;
         reference.blueprint = loadedModule.hasOwnProperty(reference.getClassName()) ? loadedModule[reference.getClassName()] : loadedModule;
       }
     }
@@ -485,6 +486,10 @@ module rtjs {
     }
 
     public initialize(initializingModule: InitializingWidget): any {
+      if (initializingModule.ref.blueprint._rtjsModule) {
+        throw initializingModule.ref.getClassName() + ' doesn\'t exist in the loaded module.';
+      }
+
       var widget = new initializingModule.ref.blueprint(initializingModule.root, initializingModule.parameters);
       return widget;
     }
