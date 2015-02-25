@@ -1,5 +1,5 @@
 # Boostrap
-Groups and manages associated controllers by retaining their references (see [LoadedControllerMap](LoadedControllerMap)). Boostrappers can also be used for cross-controller interconnectivity, and pre-controller initialization.
+Groups and manages associated controllers by retaining their references (see [LoadedControllerMap](class.LoadedControllerMap.md)). Boostrappers can also be used for cross-controller interconnectivity, and pre-controller initialization.
 
 The `Bootstrap<TModel>` class is  considered abstract.
 
