@@ -634,7 +634,7 @@ module rtjs {
     }
 
     public get(name: string): any {
-      return this.controllers[name];
+      return this.controllers[name] || null;
     }
 
     public each(callback: (controller: any) => void): void {
