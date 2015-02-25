@@ -71,10 +71,14 @@ module rtjs.formatter {
       var isTiny = false;
       if (!isNaN(s) && isFinite(s)) {
         var floatValue = parseFloat(s);
-        if (floatValue < 1) {
+
+        if (floatValue < 0.01) {
+          s = 0;
+        } else if (floatValue < 1) {
           isTiny = true;
+        } else {
+          s = Math.floor(floatValue + 0.5);
         }
-        s = Math.floor(floatValue + 0.5);
       }
 
       s = String(s).replace(/[^0-9]/g, '');
