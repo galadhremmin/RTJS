@@ -5,11 +5,20 @@ import SessionStorage = require("../../Util/SessionStorage");
 export class SvcModel extends observer.Observable implements Model {
   private requests: Array<SvcRequest>;
   private working: boolean;
+  private serviceFormatter: ISvcFormatter;
 
-  constructor(private serviceName: string) {
+  constructor(private serviceName: string, svcFormatter?: ISvcFormatter) {
     super();
     this.requests = [];
     this.working = false;
+    this.serviceFormatter = svcFormatter || {
+      formatSvcUrl(request: SvcRequest): string {
+        return '/Services/' + request.serviceName + '.svc/' + request.methodName;
+      },
+      retrieveData(request: SvcRequest, data: any) {
+        return data[request.methodName + 'Result']
+      }
+    };
   }
 
   public enqueueAll(requests: SvcRequest[]) {
@@ -61,7 +70,7 @@ export class SvcModel extends observer.Observable implements Model {
       processData: false,
       data: request.data ? JSON.stringify(request.data) : null,
       type: 'POST',
-      url: '/Services/' + request.serviceName + '.svc/' + request.methodName,
+      url: this.serviceFormatter.formatSvcUrl(request),
       success: $.proxy(jsonData => {
 
         // Run next item in the work queue. Do this asynchronously
@@ -69,7 +78,7 @@ export class SvcModel extends observer.Observable implements Model {
 
         // Invoke the callback
         if (request.callback.success) {
-          var param = request.callback.success.call(this, jsonData[request.methodName + 'Result']);
+          var param = request.callback.success.call(this, this.serviceFormatter.retrieveData(request, jsonData));
           
           // A default notification parameter was passed along. Notify the listeners.
           if (param) {
@@ -130,4 +139,17 @@ export class SvcRequest {
 export interface ISvcRequestCallback {
   success? (data: any): observer.INotification;
   fail? (statusCode: number, statusText: string, error: string): observer.INotification;
+}
+
+/**
+  * Used to allow the svcmodel to interface different types of web services.
+  * See default implementation in the constructor of SvcModel.
+  * 
+  * formatSvcUrl: should return the correctly formatted service url for the request provided.
+  * retrieveData: used to extract data from the service reply, and convert it to a format usable
+  * by the rest of the app.
+  */
+export interface ISvcFormatter {
+  formatSvcUrl(request: SvcRequest): string;
+  retrieveData(request: SvcRequest, data: any): any;
 }
