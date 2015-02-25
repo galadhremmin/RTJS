@@ -4,12 +4,32 @@ module rtjs {
     lang: IFrameworkLanguage;
   }
 
+  /**
+    * Manages framework localization. 
+    */
   export class Language {
+    /**
+      * Default application localization. A file with this name must exist under $rootPath/Globalization.
+      * The RTJS framework is loaded once the file has been retrieved and initialized. 
+      */
     private static defaultLanguage: string = "sv_SE";
+    /**
+      * Static reference to a shared instance of the Language class. 
+      */
     private static inst: Language = undefined;
+    /**
+      * Loaded culture name. 
+      */
     private currentLanguage: string;
+    /**
+      * Loaded localizations. 
+      */
     private currentStrings: IFrameworkLanguage;
 
+    /**
+      * Retrieves a shared instance of the Language class. This is the preferred method for accessing
+      * the Language class.
+      */
     public static instance(): Language {
       if (Language.inst == null) {
         Language.inst = new Language();
@@ -18,16 +38,23 @@ module rtjs {
       return Language.inst;
     }
 
+    /**
+      * Retrieves the localization strings loaded by the shared instance of the Language class. This is the preferred
+      * method for accessing localization strings.
+      */
     public static current(): IFrameworkLanguage {
       var inst = Language.instance();
       return inst.strings();
     }
 
+    /**
+      * Creates a new instance of the Language class and loads the current language from the session storage. 
+      */
     constructor() {
       this.currentLanguage = null;
       this.strings = null;
 
-      var json = window.sessionStorage['rtjslang'];
+      var json = this.getDefaultStorage()['rtjslang'];
       if (json) {
         var cacheItem: ILanguageCache = JSON.parse(json);
 
@@ -38,6 +65,9 @@ module rtjs {
       }
     }
 
+    /**
+      * Attempts to configure RTJS for the specified culture name. 
+      */
     public initialize(cultureName: string, onCompleted?: () => void): void {
       if (cultureName == null) {
         cultureName = Language.defaultLanguage;
@@ -55,26 +85,51 @@ module rtjs {
         this.strings = lang;
         this.currentLanguage = cultureName;
 
-        window.sessionStorage.setItem('rtjslang', JSON.stringify({ name: cultureName, lang: lang }));
+        this.getDefaultStorage().setItem('rtjslang', JSON.stringify({ name: cultureName, lang: lang }));
 
         if (onCompleted) {
           onCompleted.apply(this);
         }
       }, () => {
         // Something went wrong
+        // This is where you invoke your own error handling functions, if you wish!
         alert('Failed to load language ' + cultureName + '.');
       });
     }
 
+    /**
+      * Retrieves all localization strings. 
+      */
     public strings(): IFrameworkLanguage {
       return this.currentStrings;
+    }
+
+    /**
+      * Retrieves the default storage container. 
+      */
+    private getDefaultStorage(): Storage {
+      // Use sessionStorage  if you use this feature heavily, to ensure that future updates are updated.
+      // return window.sessionStorage;
+
+      return window.localStorage;
     }
   }
 
   export class Initializer {
+    /**
+      * RTJS root path, relative to the site root. This is an important parameter, which should be defined customed
+      * for your application.
+      */
     public static rootPath: string = 'RTJS/';
+
+    /**
+      * Is the executing client Internet Explorer? 
+      */
     private isIE: boolean;
 
+    /**
+      * Translates a dotted path (a.b.c.d...) to a valid class name path (a/b/c/d/...). 
+      */
     public static getClassName(name: string, includePath?: boolean): string {
       var formatName = (n) => n.substr(0, 1).toLocaleUpperCase() + n.substr(1);
       var parts = name.split('.');
@@ -99,6 +154,9 @@ module rtjs {
       return name;
     }
 
+    /**
+      * Hooks the RTJS initializer to the document ready event. 
+      */
     public static hookInitializer() {
       require.config({
         baseUrl: this.rootPath,
@@ -117,11 +175,17 @@ module rtjs {
       });
     }
 
+    /**
+      * Creates a new instance of the Initializer class. 
+      */
     constructor(private container: any, private clearSessionCache: boolean) {
       this.isIE = window.navigator.appName.toUpperCase().indexOf('EXPLORER') >= 0;
     }
 
-    public initialize(moduleInitializer: IModuleInitializer<IInitializingModule>, callback?: (modules: any[]) => void) {
+    /**
+      * Initializes the RTJS framework according to the specified module initializer.
+      */
+    public initialize(moduleInitializer: IModuleInitializer<IInitializingModule>, callback?: (modules: any[]) => void): void {
       var queue: Array<IInitializingModule> = [];
       var parent = this;
 
@@ -186,6 +250,10 @@ module rtjs {
       return dependencies;
     }
 
+    /**
+      * @deprecated 
+      * Disables the enter key on all text input elements.
+      */
     private disableEnterOnTextInputs() {
       $(this.container || 'body').find('input[type="text"]:not(.enter-intercepted)').addClass('enter-intercepted').on('keypress', (event) => {
         if (event.which == 13) { // if enter-key
@@ -495,6 +563,9 @@ module rtjs {
     }
   }
 
+  /**
+    * Retains all references necessary to require and initialize a bootstrapper, and its associated controllers and models. 
+    */
   export class InitializingBootstrapper implements IInitializingModule {
     constructor() {
       this.controllers = [];
@@ -510,6 +581,9 @@ module rtjs {
     public storageRef: DependencyReference;
   }
 
+  /**
+    * Retains all references necessary to require and initialize a controller. 
+    */
   export class InitializingController implements IInitializingModule {
     constructor() {
       this.ref = new DependencyReference();
@@ -519,6 +593,9 @@ module rtjs {
     public ref: DependencyReference;
   }
 
+  /**
+    * Retains all references necessary to require and initialize a widget. 
+    */
   export class InitializingWidget implements IInitializingModule {
     constructor() {
       this.ref = new DependencyReference();
@@ -530,6 +607,9 @@ module rtjs {
     public parameters: any;
   }
 
+  /**
+    * A dictionary mapping either a string to an object reference, or a number of references.
+    */
   export class LoadedControllerMap {
     private controllers: any;
 
@@ -537,6 +617,10 @@ module rtjs {
       this.controllers = {};
     }
 
+    /**
+      * Associates the instance to the specified string. If an object reference already exist in
+      * association with the specified name, both references will be retained.
+      */
     public add(name: string, instance: any): void {
       if (this.controllers.hasOwnProperty(name)) {
         if (!$.isArray(this.controllers[name])) {
@@ -553,7 +637,7 @@ module rtjs {
       return this.controllers[name];
     }
 
-    public each(callback: (controller: any) => void) {
+    public each(callback: (controller: any) => void): void {
       var key: string;
       var controllers: any;
       var i: number;
