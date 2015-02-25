@@ -32,6 +32,7 @@ The following code snippet initializes _ExampleBootstrap_, which in turn loads _
 * [Boostrap](Documentation/class.Bootstrap.Abstract.Bootstrap.md)
 * [Model](Documentation/class.Model.Abstract.Model.md)
 * [View](Documentation/class.UI.Views.View.md)
+  * [Widget](Documentation/class.UI.Widgets.Abstract.Widget.md)
 * [Controller](Documentation/class.UI.Controllers.Abstract.Controller.md)
 
 ## Known issues
