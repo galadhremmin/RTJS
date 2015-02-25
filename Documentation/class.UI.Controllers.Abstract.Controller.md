@@ -1,5 +1,5 @@
 # Controller
-Initializes a [view](class.UI.Views.View), and handles actions and notifications received from its [widgets](class.UI.Widgets.Abstract.Widget). A controller implements the observer/observable pattern.
+Initializes a [view](class.UI.Views.View.md), and handles actions and notifications received from its [widgets](class.UI.Widgets.Abstract.Widget.md). A controller implements the observer/observable pattern.
 
 The `Controller<TView, TModel>` class is considered abstract. The inheriting subclass must implement `constructor(rootElement: JQuery, model: Model)`. The implementation shall pass the desired view to the parent constructor. 
  
