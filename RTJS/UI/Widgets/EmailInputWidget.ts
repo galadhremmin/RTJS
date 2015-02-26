@@ -1,6 +1,4 @@
-﻿/// <reference path="Abstract/Widget.ts"/>
-
-import widget = require("./Abstract/Widget");
+﻿import widget = require("./Abstract/Widget");
   
 export class EmailInputWidget extends widget.Widget {
     
