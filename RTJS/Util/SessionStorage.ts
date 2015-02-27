@@ -12,10 +12,7 @@
   }
 
   constructor() {
-    this.storage = window.sessionStorage;
-    if (!(this.storage instanceof Storage)) {
-      throw navigator.appName + ' ' + navigator.appVersion + ' doesn\'t seem to support sessionStorage.';
-    }
+    this.storage = rtjs.UniversalSessionStorageHelper.getStorage();
   }
 
   public set(key: string, value: any): void {

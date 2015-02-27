@@ -54,7 +54,9 @@ module rtjs {
       this.currentLanguage = null;
       this.strings = null;
 
-      var json = this.getDefaultStorage()['rtjslang'];
+      var store = UniversalSessionStorageHelper.getStorage();
+      var json = store.getItem('rtjslang');
+
       if (json) {
         var cacheItem: ILanguageCache = JSON.parse(json);
 
@@ -85,7 +87,7 @@ module rtjs {
         this.strings = lang;
         this.currentLanguage = cultureName;
 
-        this.getDefaultStorage().setItem('rtjslang', JSON.stringify({ name: cultureName, lang: lang }));
+        UniversalSessionStorageHelper.getStorage().setItem('rtjslang', JSON.stringify({ name: cultureName, lang: lang }));
 
         if (onCompleted) {
           onCompleted.apply(this);
@@ -102,16 +104,6 @@ module rtjs {
       */
     public strings(): IFrameworkLanguage {
       return this.currentStrings;
-    }
-
-    /**
-      * Retrieves the default storage container. 
-      */
-    private getDefaultStorage(): Storage {
-      // Use sessionStorage  if you use this feature heavily, to ensure that future updates are updated.
-      // return window.sessionStorage;
-
-      return window.localStorage;
     }
   }
 
@@ -652,6 +644,99 @@ module rtjs {
         for (i = 0; i < controllers.length; i += 1) {
           callback.call(controllers[i], controllers[i]);
         }
+      }
+    }
+  }
+
+  /**
+  * Backup solution for when users browser does not support SessionStorage. This keeps an object in memory and JSON-serializes
+  * it into window.name. Primarily useful for iOS Safari in incognito mode, which turns of SessionStorage.
+  * Ïmplements the most useful methods of session storage.
+  */
+  export class WindowNameStorage {
+    public length: number;
+
+    private static inst = null;
+    private storage;
+    private topWindow;
+    private count: number; // Keep a separate private counter and just copy this to the public length property when updated.
+
+    // Singleton
+    public static instance(): WindowNameStorage {
+      if (WindowNameStorage.inst === null) {
+        WindowNameStorage.inst = new WindowNameStorage();
+      }
+
+      return WindowNameStorage.inst;
+    }
+
+    constructor() {
+      this.topWindow = window.top || window;
+      this.count = 0;
+
+      this.storage = (this.topWindow.name ? JSON.parse(this.topWindow.name) : {});
+      for (var key in this.storage) {
+        this.count = this.count + 1;
+      }
+
+      this.length = this.count;
+
+      $(this.topWindow).on('unload', () => {
+        this.doSerialization();
+      });
+    }
+
+    public setItem(key: string, data: string): void {
+      if (!this.storage.hasOwnProperty(key)) {
+        this.count = this.count + 1;
+        this.length = this.count;
+      }
+      this.storage[key] = data;
+      this.doSerialization();
+    }
+
+    public getItem(key: string): any {
+      return this.storage[key];
+    }
+
+    public removeItem(key: string): void {
+      if (this.storage.hasOwnProperty(key)) {
+        delete this.storage[key];
+        this.count = this.count - 1;
+        this.length = this.count;
+      }
+    }
+
+    private doSerialization() {
+      this.topWindow.name = JSON.stringify(this.storage);
+    }
+  }
+
+  /**
+    * General access to session storage that checks availability and returns window.name
+    * backup if session storage is not available. 
+    */
+  export class UniversalSessionStorageHelper {
+    public static getStorage(): any {
+      var storage: any = window.sessionStorage;
+      if (!(storage instanceof Storage) || !UniversalSessionStorageHelper.testSessionStorageAvailable(storage)) {
+        storage = WindowNameStorage.instance();
+      }
+
+      return storage;
+    }
+
+    // iOS Safari still returns session storage in incognito-mode, but throws an exception on
+    // any attempt to write to it.
+    public static testSessionStorageAvailable(storage: any): boolean {
+      var isStorageAvailable = false;
+      try {
+        storage.setItem('rt_dummy_item', '0');
+        storage.removeItem('rt_dummy_item');
+        isStorageAvailable = true;
+      } catch (e) { }
+      finally {
+        return isStorageAvailable;
       }
     }
   }
