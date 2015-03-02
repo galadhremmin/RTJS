@@ -1,5 +1,5 @@
 # AgeWidget
-A component for input elements to handle and validate age values.
+A widget for input elements. Handles and validates age values.
 
 ## Data attributes / parameters
 `AgeWidget` understands two different data attributes:
