@@ -1,7 +1,6 @@
 # Formatter
 
-A utility that formats values. A component that imports a reference to this utility, e.g. `import format = require("../../../Util/Formatter")` can 
-instanciate it by calling `format.instance().install(element: JQuery, formatterName: string)` 
+A utility that formats values. A singleton component that can be instanciated by calling `instance().install(element: JQuery, formatterName: string)` 
 
 ## Data attributes
 
